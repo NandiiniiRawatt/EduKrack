@@ -21,6 +21,15 @@
       --animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
     }
 
+    /* Dark theme variables */
+    .dark-theme {
+      --background-color: #121212;
+      --text-color: #e0e0e0;
+      --border-color: #333333;
+      --secondary-text: #a0a0a0;
+      --primary-light: #1a2b27;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -198,34 +207,102 @@
       color: var(--primary-color);
     }
 
-    /* Feed Styles - Preserve original feed styling */
-    .content-wrapper {
-      display: flex;
-      width: 100%;
-    }
-
-    .sidebar {
-      width: 240px;
-      background: white;
+    /* Instagram-style left sidebar navigation */
+    .left-sidebar {
+      width: 70px; 
       height: calc(100vh - 72px);
       padding: 20px 0;
-      border-right: 1px solid var(--border-color);
       position: sticky;
       top: 72px;
       display: flex;
       flex-direction: column;
-      transition: all 0.3s ease;
+      align-items: center;
+      border-right: 1px solid var(--border-color);
+    }
+    
+    .nav-icon-button {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+      color: var(--text-color);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative; /* Added for tooltip positioning */
+    }
+    
+    .nav-icon-button:hover {
+      background-color: var(--primary-light);
+    }
+    
+    /* Tooltip styling */
+    .nav-icon-button .tooltip {
+      position: absolute;
+      left: 60px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    .nav-icon-button:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Dark mode tooltips */
+    .dark-theme .nav-icon-button .tooltip {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .content-wrapper {
+      display: flex;
+      width: 100%;
     }
 
     .feed-container {
       flex: 1;
       max-width: 600px;
       margin: 0 auto;
-      padding: 20px 0;
-      padding-right: 20px;
+      padding: 20px;
+    }
+    
+    /* Dark theme updates */
+    .dark-theme .left-sidebar {
+      border-right: 1px solid var(--border-color);
+    }
+    
+    .dark-theme .nav-icon-button {
+      color: var(--text-color);
+    }
+    
+    .dark-theme .nav-icon-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
-    /* Header styles for the feed */
+    /* Responsive design adjustments */
+    @media (max-width: 768px) {
+      .left-sidebar {
+        width: 60px;
+      }
+      
+      .feed-container {
+        padding: 10px;
+      }
+    }
+
+    /* Feed Styles - Preserve original feed styling */
     .feed-header {
       position: sticky;
       top: 0;
@@ -411,13 +488,6 @@
       cursor: pointer;
     }
 
-    /* Sidebar adjustments */
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-    }
-
     /* Suggestions section */
     .suggestions {
       background-color: white;
@@ -556,6 +626,53 @@
       font-weight: 500;
     }
 
+    /* Theme toggle button */
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--text-color);
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -2px;
+    }
+    
+    .theme-toggle:hover {
+      background-color: var(--primary-light);
+    }
+    
+    /* Dark theme header adjustments */
+    .dark-theme header {
+      background: rgba(18, 18, 18, 0.8);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .dark-theme .mobile-menu {
+      background: var(--background-color);
+    }
+    
+    .dark-theme .post,
+    .dark-theme .course-card,
+    .dark-theme .stories-container,
+    .dark-theme .feed-header {
+      background-color: #1e1e1e;
+      border-color: var(--border-color);
+    }
+    
+    .dark-theme .post-comments input {
+      background-color: transparent;
+      color: var(--text-color);
+    }
+    
+    .dark-theme .story-avatar img {
+      border: 2px solid #1e1e1e;
+    }
+    
     /* Responsive design */
     @media (max-width: 992px) {
       .feed-container {
@@ -597,6 +714,9 @@
           <a href="about.html" class="nav-link">About</a>
           <a href="landingpage.html#features" class="nav-link">Features</a>
           <a href="convert.html" class="nav-link">Convert</a>
+          <button id="theme-toggle" class="theme-toggle">
+            <i class="fas fa-sun"></i>
+          </button>
           <a href="landingpage.html#how-it-works" class="cta-button">Learn More</a>
         </div>
         <button class="mobile-toggle">
@@ -621,25 +741,34 @@
   </div>
 
   <div class="content-wrapper">
-    <!-- Sidebar - Now simplified since we have the header nav -->
-    <div class="sidebar">
-      <div class="logo-container">
-        <h1>Categories</h1>
+    <!-- Left Sidebar - Instagram style -->
+    <div class="left-sidebar">
+      <div class="nav-icon-button">
+        <i class="fas fa-home"></i>
+        <div class="tooltip">Home</div>
       </div>
-      <a href="#" class="active">All Topics</a>
-      <a href="#">Mathematics</a>
-      <a href="#">Science</a>
-      <a href="#">History</a>
-      <a href="#">Literature</a>
-      <a href="#">Technology</a>
-      <a href="#">Languages</a>
+      <div class="nav-icon-button">
+        <i class="far fa-comment-dots"></i>
+        <div class="tooltip">Messages</div>
+      </div>
+      <div class="nav-icon-button">
+        <i class="fas fa-search"></i>
+        <div class="tooltip">Search</div>
+      </div>
+      <div class="nav-icon-button">
+        <i class="far fa-bell"></i>
+        <div class="tooltip">Notifications</div>
+      </div>
+      <div class="nav-icon-button">
+        <i class="fas fa-user"></i>
+        <div class="tooltip">Profile</div>
+      </div>
     </div>
 
     <div class="feed-container">
       <!-- Feed Header -->
       <div class="feed-header">
         <h2>Educational Feed</h2>
-        <i class="fas fa-filter"></i>
       </div>
 
       <!-- Stories -->
@@ -826,6 +955,34 @@
 
     document.querySelector('.close-menu').addEventListener('click', function() {
       document.querySelector('.mobile-menu').classList.remove('active');
+    });
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    // Check if user previously set a theme preference
+    const savedTheme = localStorage.getItem('eduKrackTheme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+      themeIcon.classList.remove('fa-sun');
+      themeIcon.classList.add('fa-moon');
+    }
+    
+    themeToggle.addEventListener('click', function() {
+      // Toggle dark theme class on body
+      document.body.classList.toggle('dark-theme');
+      
+      // Update the icon
+      if (document.body.classList.contains('dark-theme')) {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        localStorage.setItem('eduKrackTheme', 'dark');
+      } else {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        localStorage.setItem('eduKrackTheme', 'light');
+      }
     });
 
     // Like functionality
