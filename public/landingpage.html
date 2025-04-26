@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduKrack - Transform Learning into Video</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #10a37f;
+      --primary-hover: #0d8c6d;
+      --background-dark: #0e0e0e;
+      --secondary-dark: #161616;
+      --text-light: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --gradient-1: linear-gradient(90deg, #10a37f 0%, #0fcf9c 100%);
+      --gradient-2: linear-gradient(90deg, #0fcf9c 0%, #10a37f 100%);
+      --shadow-1: 0 10px 50px rgba(16, 163, 127, 0.2);
+      --animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--background-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Header & Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      background: rgba(14, 14, 14, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text-light);
+    }
+
+    .cta-button {
+      background: var(--gradient-1);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s var(--animation-timing), box-shadow 0.3s var(--animation-timing);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-title {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title .highlight {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .hero-description {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+      max-width: 90%;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .secondary-button {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.3s ease, transform 0.3s var(--animation-timing);
+    }
+
+    .secondary-button:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+    }
+
+    /* Video Preview */
+    .hero-video {
+      position: relative;
+      z-index: 2;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+      transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+      transition: transform 0.5s var(--animation-timing);
+    }
+
+    .video-wrapper:hover {
+      transform: perspective(1000px) rotateY(-2deg) rotateX(1deg) translateY(-10px);
+    }
+
+    .preview-image {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(16, 163, 127, 0.9);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .play-button:hover {
+      background: var(--primary-color);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .play-button i {
+      color: white;
+      font-size: 2rem;
+      margin-left: 5px;
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 8rem 0;
+      background-color: var(--secondary-dark);
+      position: relative;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 4rem;
+      text-align: center;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 3rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: transform 0.3s var(--animation-timing), box-shadow 0.3s var(--animation-timing);
+      border: 1px solid var(--border-color);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border-color: var(--primary-color);
+    }
+
+    .feature-icon {
+      background: var(--gradient-1);
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .feature-description {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+      padding: 8rem 0;
+      background-color: var(--background-dark);
+    }
+
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .step:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-number {
+      background: var(--gradient-1);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .step-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .step-description {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-image {
+      flex: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      transform: perspective(1000px) rotateY(-5deg);
+      transition: transform 0.5s var(--animation-timing);
+      height: 350px;
+      max-width: 600px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .step-image:hover {
+      transform: perspective(1000px) rotateY(-2deg) translateY(-10px);
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 6rem 0;
+      background: var(--gradient-2);
+      text-align: center;
+    }
+
+    .cta-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-description {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .cta-button-large {
+      background: white;
+      color: var(--primary-color);
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.3s var(--animation-timing), box-shadow 0.3s var(--animation-timing);
+    }
+
+    .cta-button-large:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--background-dark);
+      padding: 4rem 0 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 4rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-description {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      max-width: 300px;
+    }
+
+    .footer-heading {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 1rem;
+    }
+
+    .footer-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--text-light);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .social-icon:hover {
+      background: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    .copyright {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Animation Elements */
+    .floating-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: float 15s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-500px) translateX(100px);
+        opacity: 0;
+      }
+    }
+
+    /* Glow Effect */
+    .glow {
+      position: absolute;
+      top: 20%;
+      left: 20%;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: rgba(16, 163, 127, 0.2);
+      filter: blur(100px);
+      z-index: 0;
+      animation: glow-move 20s infinite alternate ease-in-out;
+    }
+
+    .glow-2 {
+      top: 60%;
+      left: 70%;
+      width: 500px;
+      height: 500px;
+      animation-delay: 5s;
+    }
+
+    @keyframes glow-move {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(100px, 50px);
+      }
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .hero-video {
+        margin-top: 2rem;
+      }
+
+      .step {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 2rem;
+      }
+
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 3rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-toggle {
+        display: block;
+        font-size: 1.5rem;
+        color: var(--text-light);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+      }
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--background-dark);
+      z-index: 1001;
+      padding: 2rem;
+      transform: translateX(-100%);
+      transition: transform 0.5s var(--animation-timing);
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .close-menu {
+      font-size: 2rem;
+      color: var(--text-light);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 5rem;
+    }
+
+    .mobile-nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .mobile-nav-link:hover {
+      color: var(--text-light);
+    }
+
+    .mobile-toggle {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#" class="logo">
+          <img src="../logo_icon.png" alt="EduKrack Icon">
+          <span class="logo-text">EduKrack</span>
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#how-it-works" class="nav-link">How It Works</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="convert.html" class="cta-button">Try Now</a>
+        </div>
+        <button class="mobile-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+    <button class="close-menu">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="mobile-nav-links">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="#features" class="mobile-nav-link">Features</a>
+      <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="convert.html" class="mobile-nav-link">Try Now</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="floating-particles">
+      <div class="particle" style="top: 20%; left: 10%; animation-duration: 20s;"></div>
+      <div class="particle" style="top: 70%; left: 20%; animation-duration: 15s;"></div>
+      <div class="particle" style="top: 40%; left: 50%; animation-duration: 18s;"></div>
+      <div class="particle" style="top: 60%; left: 80%; animation-duration: 22s;"></div>
+      <div class="particle" style="top: 30%; left: 30%; animation-duration: 19s;"></div>
+      <div class="particle" style="top: 80%; left: 40%; animation-duration: 17s;"></div>
+      <div class="particle" style="top: 10%; left: 60%; animation-duration: 16s;"></div>
+      <div class="particle" style="top: 50%; left: 70%; animation-duration: 21s;"></div>
+    </div>
+    <div class="glow"></div>
+    <div class="glow glow-2"></div>
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <h1 class="hero-title">Transform Learning into <span class="highlight">Engaging Videos</span></h1>
+          <p class="hero-description">
+            EduKrack converts your learning topics into dynamic educational videos in seconds. Boost comprehension and retention with AI-powered video lessons.
+          </p>
+          <div class="hero-buttons">
+            <a href="convert.html" class="cta-button">Get Started Now</a>
+            <a href="#how-it-works" class="secondary-button">
+              <i class="fas fa-play-circle"></i> Learn How It Works
+            </a>
+          </div>
+        </div>
+        <div class="hero-video">
+          <div class="video-wrapper">
+            <img src="https://images.unsplash.com/photo-1610484826967-09c5720778c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" alt="EduKrack Demo" class="preview-image">
+            <div class="play-button">
+              <i class="fas fa-play"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <h2 class="section-title">Features That Transform Learning</h2>
+      <p class="section-subtitle">
+        EduKrack's suite of powerful features makes learning more engaging, accessible, and effective for students of all ages.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="feature-title">AI-Powered Video Generation</h3>
+          <p class="feature-description">
+            Our advanced AI transforms any topic into engaging educational videos in seconds. Just type your topic and watch it come to life.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <h3 class="feature-title">Personalized Learning</h3>
+          <p class="feature-description">
+            Content tailored to your learning style and pace. Whether you're a visual learner or prefer detailed explanations.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <h3 class="feature-title">Comprehensive Subject Coverage</h3>
+          <p class="feature-description">
+            From math and science to history and literature, EduKrack covers a wide range of subjects with accurate content.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How EduKrack Works</h2>
+      <p class="section-subtitle">
+        Converting complex topics into engaging videos is simple with EduKrack's intuitive process
+      </p>
+
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-content">
+            <div class="step-number">1</div>
+            <h3 class="step-title">Enter Your Topic</h3>
+            <p class="step-description">
+              Type any educational topic, question, or concept into EduKrack's conversion tool. Be as specific or general as you like.
+            </p>
+            <a href="convert.html" class="secondary-button">Try It Now</a>
+          </div>
+          <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');">
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-content">
+            <div class="step-number">2</div>
+            <h3 class="step-title">AI Analyzes & Converts</h3>
+            <p class="step-description">
+              Our AI engine analyzes your topic, identifies key concepts, and transforms it into an engaging video lesson with visuals and explanations.
+            </p>
+          </div>
+          <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');">
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-content">
+            <div class="step-number">3</div>
+            <h3 class="step-title">Learn & Share</h3>
+            <p class="step-description">
+              Watch your personalized video lesson, reinforce your understanding, and share it with classmates, students, or friends for collaborative learning.
+            </p>
+            <a href="convert.html" class="secondary-button">Start Converting</a>
+          </div>
+          <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1771&q=80');">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title">Ready to Transform Your Learning?</h2>
+      <p class="cta-description">
+        Join thousands of students and educators using EduKrack to convert complex topics into engaging video lessons.
+      </p>
+      <a href="convert.html" class="cta-button-large">Get Started for Free</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo">
+            <img src="../logo_icon.png" alt="EduKrack Icon" height="30">
+            <span class="logo-text">EduKrack</span>
+          </div>
+          <p class="footer-description">
+            Transforming education through AI-powered video learning experiences.
+          </p>
+          <div class="footer-social">
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="convert.html" class="footer-link">Convert Tool</a></li>
+            <li><a href="#" class="footer-link">Browse Topics</a></li>
+            <li><a href="#" class="footer-link">Resources</a></li>
+            <li><a href="#" class="footer-link">Educators</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="about.html" class="footer-link">About Us</a></li>
+            <li><a href="#" class="footer-link">Careers</a></li>
+            <li><a href="#" class="footer-link">Blog</a></li>
+            <li><a href="#" class="footer-link">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#" class="footer-link">Terms of Service</a></li>
+            <li><a href="#" class="footer-link">Privacy Policy</a></li>
+            <li><a href="#" class="footer-link">Cookies</a></li>
+            <li><a href="#" class="footer-link">Accessibility</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="copyright">
+        &copy; 2025 EduKrack. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.add('active');
+    });
+
+    document.querySelector('.close-menu').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.remove('active');
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+
+        // Close mobile menu if open
+        document.querySelector('.mobile-menu').classList.remove('active');
+      });
+    });
+
+    // Video modal functionality
+    document.querySelector('.play-button').addEventListener('click', function() {
+      alert('Video player would launch here in the production version');
+    });
+
+    // Add more floating particles dynamically
+    const particles = document.querySelector('.floating-particles');
+    for (let i = 0; i < 20; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+      particle.style.animationDelay = (Math.random() * 10) + 's';
+      particles.appendChild(particle);
+    }
+  </script>
+</body>
+</html>

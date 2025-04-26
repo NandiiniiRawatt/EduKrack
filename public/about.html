@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduKrack - About</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #10a37f;
+      --primary-hover: #0d8c6d;
+      --background-dark: #0e0e0e;
+      --secondary-dark: #161616;
+      --text-light: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --gradient-1: linear-gradient(90deg, #10a37f 0%, #0fcf9c 100%);
+      --gradient-2: linear-gradient(90deg, #0fcf9c 0%, #10a37f 100%);
+      --shadow-1: 0 10px 50px rgba(16, 163, 127, 0.2);
+      --animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.5;
+      color: #1d1d1f;
+      background-color: #fff;
+      overflow-x: hidden;
+      padding-top: 72px; /* Space for fixed header */
+    }
+
+    /* Header & Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: #1d1d1f;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: var(--gradient-1);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .nav-link.active {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .nav-link.active:after {
+      width: 100%;
+    }
+
+    .cta-button {
+      background: var(--gradient-1);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s var(--animation-timing), box-shadow 0.3s var(--animation-timing);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Mobile Menu */
+    .mobile-toggle {
+      display: none;
+      font-size: 1.5rem;
+      color: #1d1d1f;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 1001;
+      padding: 2rem;
+      transform: translateX(-100%);
+      transition: transform 0.5s var(--animation-timing);
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .close-menu {
+      font-size: 2rem;
+      color: #1d1d1f;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 5rem;
+    }
+
+    .mobile-nav-link {
+      color: #1d1d1f;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .mobile-nav-link:hover {
+      color: var(--primary-color);
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      color: #fff;
+      position: relative;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .hero-content {
+      max-width: 1000px;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 24px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Section Styling */
+    .section {
+      padding: 100px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section h2 {
+      font-size: 40px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .section p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      color: #424245;
+    }
+
+    /* Mission Section */
+    .mission {
+      background-image: url('https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      position: relative;
+      color: #fff;
+    }
+    
+    .mission::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .mission .section-container {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .mission h2, .mission p {
+      color: #fff;
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .mission-item {
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .mission-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .mission-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+      color: #10a37f;
+    }
+
+    .mission-item h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    
+    .mission-item p {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Features Section */
+    .features {
+      background-color: #fff;
+    }
+
+    .feature-block {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+
+    .feature-block:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .feature-text {
+      flex: 1;
+      padding: 0 40px;
+    }
+
+    .feature-image {
+      flex: 1;
+      height: 400px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .feature-block h3 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    /* Team Section */
+    .team {
+      background-color: #f5f5f7;
+      text-align: center;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+
+    .team-member {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .team-member:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .team-image {
+      height: 250px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    
+    .team-image::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0);
+      transition: background-color 0.3s;
+    }
+    
+    .team-member:hover .team-image::after {
+      background-color: rgba(0,0,0,0.2);
+    }
+    
+    .linkedin-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      color: white;
+      font-size: 40px;
+      z-index: 2;
+      transition: transform 0.3s;
+    }
+    
+    .team-member:hover .linkedin-icon {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .team-info {
+      padding: 20px;
+    }
+
+    .team-info h3 {
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .team-info p {
+      color: #10a37f;
+      margin-bottom: 0;
+      font-size: 16px;
+    }
+
+    /* Contact Section */
+    .contact {
+      background-color: #000;
+      color: #f5f5f7;
+      text-align: center;
+    }
+
+    .contact h2 {
+      color: #f5f5f7;
+    }
+
+    .contact p {
+      color: #a1a1a6;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .contact-item {
+      padding: 20px;
+    }
+
+    .contact-icon {
+      font-size: 30px;
+      margin-bottom: 15px;
+      color: #10a37f;
+    }
+
+    .contact-item h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .contact-item a {
+      color: #10a37f;
+      text-decoration: none;
+      transition: opacity 0.3s;
+    }
+
+    .contact-item a:hover {
+      opacity: 0.8;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #f5f5f7;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 14px;
+      color: #6e6e73;
+    }
+
+    footer a {
+      color: #424245;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    /* Back to top button */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #10a37f;
+      color: #fff;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 999;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 42px;
+      }
+      .hero p {
+        font-size: 20px;
+      }
+      .feature-block {
+        flex-direction: column-reverse;
+        margin-bottom: 40px;
+      }
+      .feature-block:nth-child(even) {
+        flex-direction: column-reverse;
+      }
+      .feature-text, .feature-image {
+        flex: none;
+        width: 100%;
+      }
+      .feature-image {
+        height: 300px;
+        margin-bottom: 30px;
+      }
+      .feature-text {
+        padding: 0;
+      }
+      .section {
+        padding: 60px 0;
+      }
+      .section h2 {
+        font-size: 32px;
+      }
+      .nav-links {
+        display: none;
+      }
+      .mobile-toggle {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header>
+    <div class="container">
+      <nav>
+        <a href="about.html" class="logo">
+          <img src="../logo_icon.png" alt="EduKrack Icon">
+          <span class="logo-text">EduKrack</span>
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Feed</a>
+          <a href="about.html" class="nav-link active">About</a>
+          <a href="landingpage.html#features" class="nav-link">Features</a>
+          <a href="convert.html" class="cta-button">Try Now</a>
+        </div>
+        <button class="mobile-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+    <button class="close-menu">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="mobile-nav-links">
+      <a href="index.html" class="mobile-nav-link">Feed</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="landingpage.html#features" class="mobile-nav-link">Features</a>
+      <a href="convert.html" class="mobile-nav-link">Try Now</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>About EduKrack</h1>
+      <p>Transforming education through AI-powered video learning experiences</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section">
+    <div class="section-container">
+      <h2>Our Story</h2>
+      <p>
+        EduKrack was founded with a simple yet powerful vision: to make quality education accessible to everyone! <br>
+        In a world where learning is constantly evolving, we recognized the need for a platform that could transform 
+        complex educational topics into engaging, visual content.
+      </p>
+      <p>
+        EduKrack combines cutting-edge AI technology to create an innovative platform where anyone can convert 
+        learning topics into personalized video lessons. 
+        We believe that everyone learns differently, and our technology adapts to individual learning styles 
+        to create the most effective educational experience possible.
+      </p>
+      <p>
+        Today, EduKrack is aimed to focus on the educational content for students, educators, and lifelong learners 
+        around the world who share our passion for making education more engaging, accessible, and effective.
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
+  <section class="section mission">
+    <div class="section-container">
+      <h2>Our Mission</h2>
+      <p>
+        At EduKrack, we're committed to democratizing education through technology, making learning more 
+        accessible, engaging, and effective for everyone.
+      </p>
+      <div class="mission-grid">
+        <div class="mission-item">
+          <div class="mission-icon">✨</div>
+          <h3>Accessibility</h3>
+          <p>Making education available to everyone, regardless of location or background.</p>
+        </div>
+        <div class="mission-item">
+          <div class="mission-icon">🧠</div>
+          <h3>Innovation</h3>
+          <p>Constantly evolving our technology to provide the best learning experiences.</p>
+        </div>
+        <div class="mission-item">
+          <div class="mission-icon">🌍</div>
+          <h3>Community</h3>
+          <p>Building a global community where knowledge is shared and celebrated.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section features">
+    <div class="section-container">
+      <h2>Key Features</h2>
+      <div class="feature-block">
+        <div class="feature-text">
+          <h3>AI-Powered Video Generation</h3>
+          <p>
+            Our advanced AI technology transforms any topic or question into engaging, 
+            educational videos in seconds. The system analyzes the content, understands 
+            the key concepts, and creates visually appealing explanations tailored to 
+            different learning styles.
+          </p>
+        </div>
+        <div class="feature-image" style="background-image: url('https://images.unsplash.com/photo-1526378800651-c5b56581afff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1776&q=80');"></div>
+      </div>
+      <div class="feature-block">
+        <div class="feature-text">
+          <h3>Personalized Learning Experience</h3>
+          <p>
+            EduKrack adapts to your learning style and pace. Whether you're a visual 
+            learner or prefer step-by-step explanations, our platform creates content 
+            that resonates with your unique way of understanding and retaining information.
+          </p>
+        </div>
+        <div class="feature-image" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1771&q=80');"></div>
+      </div>
+      <div class="feature-block">
+        <div class="feature-text">
+          <h3>Comprehensive Subject Coverage</h3>
+          <p>
+            From mathematics and science to history and literature, EduKrack covers a wide 
+            range of subjects. Our system continuously learns and expands its knowledge base 
+            to provide accurate and up-to-date educational content across disciplines.
+          </p>
+        </div>
+        <div class="feature-image" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1722&q=80');"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="section team">
+    <div class="section-container">
+      <h2>Our Team</h2>
+      <p>
+        EduKrack is powered by a team of passionate people
+        committed to transforming education through technology.
+      </p>
+      <div class="team-grid">
+        <a href="https://www.linkedin.com/in/nandiinii-rawatt/" target="_blank" class="team-member">
+          <div class="team-image" style="background-image: url('../nandiinii.jpeg');">
+            <div class="linkedin-icon">🔗</div>
+          </div>
+          <div class="team-info">
+            <h3>Nandiinii Rawatt</h3>
+            <p>Co-Founder</p>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/serveshkhandwe/" target="_blank" class="team-member">
+          <div class="team-image" style="background-image: url('../servesh.jpg');">
+            <div class="linkedin-icon">🔗</div>
+          </div>
+          <div class="team-info">
+            <h3>Servesh Khandwe</h3>
+            <p>Co-founder and CTO</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section contact">
+    <div class="section-container">
+      <h2>Get in Touch</h2>
+      <p>
+        Have questions or feedback? We'd love to hear from you. Reach out to our team 
+        through any of the channels below.
+      </p>
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <h3>Email</h3>
+          <a href="mailto:info@edukrack.com">info@edukrack.com</a>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <h3>Phone</h3>
+          <p>+1 (555) 123-4567</p>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <h3>Location</h3>
+          <p>123 Education Lane<br>Knowledge City, CA 94000</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Careers</a>
+    </div>
+    <p>Copyright © 2025 EduKrack. All rights reserved.</p>
+  </footer>
+
+  <!-- Back to top button -->
+  <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+  <script>
+    // Show/hide back to top button
+    window.addEventListener('scroll', function() {
+      const backToTopButton = document.getElementById('backToTop');
+      if (window.scrollY > 300) {
+        backToTopButton.classList.add('visible');
+      } else {
+        backToTopButton.classList.remove('visible');
+      }
+    });
+
+    // Smooth scroll to top
+    document.getElementById('backToTop').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    // Mobile menu toggle
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.add('active');
+    });
+
+    document.querySelector('.close-menu').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.remove('active');
+    });
+  </script>
+</body>
+</html>

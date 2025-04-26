@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduKrack - Convert</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #10a37f;
+      --primary-hover: #0d8c6d;
+      --background-dark: #0e0e0e;
+      --secondary-dark: #161616;
+      --text-light: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --gradient-1: linear-gradient(90deg, #10a37f 0%, #0fcf9c 100%);
+      --gradient-2: linear-gradient(90deg, #0fcf9c 0%, #10a37f 100%);
+      --shadow-1: 0 10px 50px rgba(16, 163, 127, 0.2);
+      --animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      font-size: 16px;
+      line-height: 1.5;
+      background: #f5f5f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 72px; /* Space for fixed header */
+    }
+
+    .container {
+      width: 100%;
+      padding: 0 2rem;
+    }
+
+    /* Header & Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: var(--gradient-1);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .nav-link.active {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .nav-link.active:after {
+      width: 100%;
+    }
+
+    .cta-button {
+      background: var(--gradient-1);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s var(--animation-timing), box-shadow 0.3s var(--animation-timing);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Mobile Menu */
+    .mobile-toggle {
+      display: none;
+      font-size: 1.5rem;
+      color: #333;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      z-index: 1001;
+      padding: 2rem;
+      transform: translateX(-100%);
+      transition: transform 0.5s var(--animation-timing);
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .close-menu {
+      font-size: 2rem;
+      color: #333;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 5rem;
+    }
+
+    .mobile-nav-link {
+      color: #333;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .mobile-nav-link:hover {
+      color: var(--primary-color);
+    }
+
+    /* Full-page Convert Interface */
+    #chatContainer {
+      width: 100%;
+      height: calc(100vh - 72px); /* Full height minus header */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-content {
+      flex: 1;
+      height: calc(100vh - 130px); /* Adjusted height without second header */
+      overflow-y: auto;
+      padding: 20px;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      margin-bottom: 20px;
+      padding: 12px 18px;
+      border-radius: 18px;
+      max-width: 70%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .user-message {
+      background-color: #10a37f;
+      color: white;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .ai-message {
+      background-color: #f0f0f0;
+      color: #333;
+      align-self: flex-start;
+    }
+
+    .user-input {
+      display: flex;
+      padding: 15px 20px;
+      background-color: #fff;
+      border-top: 1px solid #e0e0e0;
+      position: sticky;
+      bottom: 0;
+    }
+
+    #userMessage {
+      flex: 1;
+      padding: 16px 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 1rem;
+      outline: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    #userMessage:focus {
+      border-color: #10a37f;
+      box-shadow: 0 2px 8px rgba(16, 163, 127, 0.15);
+    }
+
+    #sendButton {
+      padding: 16px 24px;
+      margin-left: 10px;
+      background-color: #10a37f;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 2px 8px rgba(16, 163, 127, 0.2);
+    }
+
+    #sendButton:hover {
+      background-color: #0d8c6d;
+      transform: translateY(-2px);
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle:hover {
+      background-color: rgba(0,0,0,0.05);
+    }
+
+    /* Dark theme styles */
+    .dark-theme {
+      background-color: #1a1a1a;
+      color: #f5f5f5;
+    }
+
+    .dark-theme header {
+      background: rgba(26, 26, 26, 0.8);
+      border-bottom-color: #333;
+    }
+
+    .dark-theme .nav-link {
+      color: #f5f5f5;
+    }
+
+    .dark-theme .theme-toggle {
+      color: #f5f5f5;
+    }
+
+    .dark-theme .mobile-toggle {
+      color: #f5f5f5;
+    }
+
+    .dark-theme .chat-content {
+      background-color: #1a1a1a;
+    }
+
+    .dark-theme .ai-message {
+      background-color: #333;
+      color: #f5f5f5;
+    }
+
+    .dark-theme .user-input {
+      background-color: #222;
+      border-color: #333;
+    }
+
+    .dark-theme #userMessage {
+      background-color: #333;
+      border-color: #444;
+      color: #f5f5f5;
+    }
+
+    .dark-theme .theme-toggle:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
+      
+      .message {
+        max-width: 85%;
+      }
+      
+      .user-input {
+        padding: 10px;
+      }
+      
+      #userMessage {
+        padding: 12px 15px;
+      }
+      
+      #sendButton {
+        padding: 12px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header>
+    <div class="container">
+      <nav>
+        <a href="landingpage.html" class="logo">
+          <img src="../logo_icon.png" alt="EduKrack Icon">
+          <span class="logo-text">EduKrack</span>
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Feed</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="landingpage.html#features" class="nav-link">Features</a>
+          <a href="convert.html" class="nav-link active">Convert</a>
+          <a href="landingpage.html#how-it-works" class="cta-button">Learn More</a>
+          <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+        <button class="mobile-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content - Full Page Chat Interface -->
+  <div id="chatContainer">
+    <div class="chat-content" id="chatContent">
+      <div class="message ai-message">
+        Hi there! I'm EduKrack. What educational topic would you like me to convert into a video lesson?
+      </div>
+    </div>
+    <div class="user-input">
+      <input type="text" id="userMessage" placeholder="Type your topic here..." />
+      <button id="sendButton"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Toggle dark/light theme
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+      const themeIcon = document.querySelector('.theme-toggle i');
+      if (document.body.classList.contains('dark-theme')) {
+        themeIcon.className = 'fas fa-sun';
+      } else {
+        themeIcon.className = 'fas fa-moon';
+      }
+    }
+
+    // Handle sending messages
+    document.getElementById('sendButton').addEventListener('click', sendMessage);
+    document.getElementById('userMessage').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    function sendMessage() {
+      const userMessage = document.getElementById('userMessage').value.trim();
+      if (!userMessage) return;
+
+      // Add user message to chat
+      const chatContent = document.getElementById('chatContent');
+      const userMessageDiv = document.createElement('div');
+      userMessageDiv.classList.add('message', 'user-message');
+      userMessageDiv.textContent = userMessage;
+      chatContent.appendChild(userMessageDiv);
+
+      // Clear input
+      document.getElementById('userMessage').value = '';
+
+      // Scroll to bottom
+      chatContent.scrollTop = chatContent.scrollHeight;
+
+      // Send to backend and get response
+      fetch('/api/generate-reply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          const aiMessageDiv = document.createElement('div');
+          aiMessageDiv.classList.add('message', 'ai-message');
+          aiMessageDiv.textContent = data.reply;
+          chatContent.appendChild(aiMessageDiv);
+          chatContent.scrollTop = chatContent.scrollHeight;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          const aiMessageDiv = document.createElement('div');
+          aiMessageDiv.classList.add('message', 'ai-message');
+          aiMessageDiv.textContent = 'Sorry, I encountered an error while processing your request.';
+          chatContent.appendChild(aiMessageDiv);
+          chatContent.scrollTop = chatContent.scrollHeight;
+        });
+    }
+    
+    // Mobile menu toggle
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.add('active');
+    });
+
+    document.querySelector('.close-menu').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.remove('active');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduKrack - Education Feed</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #10a37f;
+      --primary-hover: #0d8c6d;
+      --primary-light: #e6f4f1;
+      --background-color: #fafafa;
+      --text-color: #262626;
+      --border-color: #dbdbdb;
+      --secondary-text: #8e8e8e;
+      --story-border: linear-gradient(45deg, #FFC107, #FF5722, #F44336, #E91E63, #9C27B0);
+      --gradient-1: linear-gradient(90deg, #10a37f 0%, #0fcf9c 100%);
+      --shadow-1: 0 10px 50px rgba(16, 163, 127, 0.2);
+      --animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 72px; /* Space for fixed header */
+    }
+
+    /* Header & Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: var(--gradient-1);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .nav-link.active {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .nav-link.active:after {
+      width: 100%;
+    }
+
+    .cta-button {
+      background: var(--gradient-1);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s var(--animation-timing), box-shadow 0.3s var(--animation-timing);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Mobile Menu */
+    .mobile-toggle {
+      display: none;
+      font-size: 1.5rem;
+      color: var(--text-color);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 1001;
+      padding: 2rem;
+      transform: translateX(-100%);
+      transition: transform 0.5s var(--animation-timing);
+    }
+
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+
+    .close-menu {
+      font-size: 2rem;
+      color: var(--text-color);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 5rem;
+    }
+
+    .mobile-nav-link {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .mobile-nav-link:hover {
+      color: var(--primary-color);
+    }
+
+    /* Feed Styles - Preserve original feed styling */
+    .content-wrapper {
+      display: flex;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: white;
+      height: calc(100vh - 72px);
+      padding: 20px 0;
+      border-right: 1px solid var(--border-color);
+      position: sticky;
+      top: 72px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .feed-container {
+      flex: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px 0;
+      padding-right: 20px;
+    }
+
+    /* Header styles for the feed */
+    .feed-header {
+      position: sticky;
+      top: 0;
+      background-color: white;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      border-radius: 8px;
+    }
+
+    .feed-header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    /* Stories section */
+    .stories-container {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px 0;
+      margin-bottom: 20px;
+      scrollbar-width: none;
+      background-color: white;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .stories-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .story {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 15px;
+      cursor: pointer;
+      min-width: 70px;
+    }
+
+    .story-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      padding: 3px;
+      background: var(--story-border);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .story-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+    }
+
+    .story-username {
+      font-size: 0.7rem;
+      color: var(--text-color);
+      max-width: 70px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    /* Feed posts */
+    .post {
+      background-color: white;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .post-user {
+      display: flex;
+      align-items: center;
+    }
+
+    .post-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .post-username {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .post-content img {
+      width: 100%;
+      max-height: 600px;
+      object-fit: cover;
+    }
+
+    .post-video {
+      width: 100%;
+      max-height: 600px;
+      object-fit: cover;
+      background-color: black;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+    }
+
+    .post-actions-left {
+      display: flex;
+      gap: 15px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--text-color);
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .post-likes {
+      padding: 0 15px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .post-caption {
+      padding: 5px 15px 10px;
+      font-size: 0.9rem;
+    }
+
+    .post-caption span {
+      font-weight: 600;
+      margin-right: 5px;
+    }
+
+    .post-time {
+      padding: 0 15px 15px;
+      color: var(--secondary-text);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    /* Comment section */
+    .post-comments {
+      border-top: 1px solid var(--border-color);
+      padding: 10px 15px;
+      display: flex;
+    }
+
+    .post-comments input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.9rem;
+      padding: 8px 0;
+    }
+
+    .post-comments button {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Sidebar adjustments */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    /* Suggestions section */
+    .suggestions {
+      background-color: white;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .suggestions-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      color: var(--secondary-text);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .see-all {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+
+    .suggestion {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .suggestion-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .suggestion-info {
+      flex: 1;
+    }
+
+    .suggestion-username {
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .suggestion-relation {
+      font-size: 0.7rem;
+      color: var(--secondary-text);
+    }
+
+    .suggestion-follow {
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .liked {
+      color: #ed4956;
+    }
+
+    /* Course cards for educational content */
+    .course-card {
+      background-color: white;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .course-image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .course-details {
+      padding: 15px;
+    }
+
+    .course-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .course-instructor {
+      color: var(--secondary-text);
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+    }
+
+    .course-description {
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+    }
+
+    .course-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .course-price {
+      font-weight: 600;
+    }
+
+    .course-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .course-button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Topic tags for educational content */
+    .topic-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .topic-tag {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    /* Responsive design */
+    @media (max-width: 992px) {
+      .feed-container {
+        max-width: 100%;
+        padding: 20px;
+      }
+      
+      .course-container {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .feed-container {
+        padding: 10px;
+      }
+
+      .post-actions-left {
+        gap: 10px;
+      }
+      
+      .action-btn {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header>
+    <div class="container">
+      <nav>
+        <a href="about.html" class="logo">
+          <img src="../logo_icon.png" alt="EduKrack Icon">
+          <span class="logo-text">EduKrack</span>
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link active">Feed</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="landingpage.html#features" class="nav-link">Features</a>
+          <a href="convert.html" class="nav-link">Convert</a>
+          <a href="landingpage.html#how-it-works" class="cta-button">Learn More</a>
+        </div>
+        <button class="mobile-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+    <button class="close-menu">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="mobile-nav-links">
+      <a href="index.html" class="mobile-nav-link">Feed</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="landingpage.html#features" class="mobile-nav-link">Features</a>
+      <a href="convert.html" class="mobile-nav-link">Convert</a>
+      <a href="landingpage.html#how-it-works" class="mobile-nav-link">Learn More</a>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Sidebar - Now simplified since we have the header nav -->
+    <div class="sidebar">
+      <div class="logo-container">
+        <h1>Categories</h1>
+      </div>
+      <a href="#" class="active">All Topics</a>
+      <a href="#">Mathematics</a>
+      <a href="#">Science</a>
+      <a href="#">History</a>
+      <a href="#">Literature</a>
+      <a href="#">Technology</a>
+      <a href="#">Languages</a>
+    </div>
+
+    <div class="feed-container">
+      <!-- Feed Header -->
+      <div class="feed-header">
+        <h2>Educational Feed</h2>
+        <i class="fas fa-filter"></i>
+      </div>
+
+      <!-- Stories -->
+      <div class="stories-container">
+        <div class="story">
+          <div class="story-avatar">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+          </div>
+          <div class="story-username">Physics</div>
+        </div>
+        <div class="story">
+          <div class="story-avatar">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
+          </div>
+          <div class="story-username">Math</div>
+        </div>
+        <div class="story">
+          <div class="story-avatar">
+            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User">
+          </div>
+          <div class="story-username">Literature</div>
+        </div>
+        <div class="story">
+          <div class="story-avatar">
+            <img src="https://randomuser.me/api/portraits/men/78.jpg" alt="User">
+          </div>
+          <div class="story-username">Biology</div>
+        </div>
+        <div class="story">
+          <div class="story-avatar">
+            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User">
+          </div>
+          <div class="story-username">Chemistry</div>
+        </div>
+        <div class="story">
+          <div class="story-avatar">
+            <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="User">
+          </div>
+          <div class="story-username">History</div>
+        </div>
+      </div>
+
+      <!-- Educational Course Card -->
+      <div class="course-card">
+        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGh5c2ljc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60" class="course-image" alt="Physics Course">
+        <div class="course-details">
+          <div class="course-title">Advanced Quantum Physics</div>
+          <div class="course-instructor">Dr. Richard Feynman</div>
+          <div class="course-description">Explore the fascinating world of quantum mechanics with our comprehensive course on advanced quantum physics concepts.</div>
+          <div class="topic-tags">
+            <div class="topic-tag">Physics</div>
+            <div class="topic-tag">Quantum</div>
+            <div class="topic-tag">Advanced</div>
+          </div>
+          <div class="course-action">
+            <div class="course-price">Free</div>
+            <button class="course-button">Enroll Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Educational Posts -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-user">
+            <img src="https://randomuser.me/api/portraits/women/76.jpg" alt="User" class="post-avatar">
+            <div class="post-username">math_educator</div>
+          </div>
+          <i class="fas fa-ellipsis-h"></i>
+        </div>
+        <div class="post-content">
+          <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Math concept">
+        </div>
+        <div class="post-actions">
+          <div class="post-actions-left">
+            <button class="action-btn"><i class="far fa-heart"></i></button>
+            <button class="action-btn"><i class="far fa-comment"></i></button>
+            <button class="action-btn"><i class="far fa-paper-plane"></i></button>
+          </div>
+          <button class="action-btn"><i class="far fa-bookmark"></i></button>
+        </div>
+        <div class="post-likes">2,453 likes</div>
+        <div class="post-caption">
+          <span>math_educator</span>Understanding calculus is all about grasping the concept of limits and derivatives. This visual representation shows how the tangent line approximates the curve at a point. #Calculus #Mathematics #Learning
+        </div>
+        <div class="post-time">3 hours ago</div>
+        <div class="post-comments">
+          <input type="text" placeholder="Add a comment...">
+          <button>Post</button>
+        </div>
+      </div>
+
+      <!-- Video Content -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-user">
+            <img src="https://randomuser.me/api/portraits/men/52.jpg" alt="User" class="post-avatar">
+            <div class="post-username">science_lab</div>
+          </div>
+          <i class="fas fa-ellipsis-h"></i>
+        </div>
+        <div class="post-content">
+          <video class="post-video" controls>
+            <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="post-actions">
+          <div class="post-actions-left">
+            <button class="action-btn"><i class="far fa-heart"></i></button>
+            <button class="action-btn"><i class="far fa-comment"></i></button>
+            <button class="action-btn"><i class="far fa-paper-plane"></i></button>
+          </div>
+          <button class="action-btn"><i class="far fa-bookmark"></i></button>
+        </div>
+        <div class="post-likes">5,129 likes</div>
+        <div class="post-caption">
+          <span>science_lab</span>Watch this amazing chemical reaction that demonstrates the principles of exothermic reactions. The energy released in this reaction is visible as light and heat! #Chemistry #Science #Reaction
+        </div>
+        <div class="post-time">5 hours ago</div>
+        <div class="post-comments">
+          <input type="text" placeholder="Add a comment...">
+          <button>Post</button>
+        </div>
+      </div>
+
+      <!-- Educational Course Card -->
+      <div class="course-card">
+        <img src="https://images.unsplash.com/photo-1605711285791-0219e80e43a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmlvbG9neXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60" class="course-image" alt="Biology Course">
+        <div class="course-details">
+          <div class="course-title">Human Anatomy Fundamentals</div>
+          <div class="course-instructor">Prof. Jane Smith</div>
+          <div class="course-description">Discover the incredible human body and how it works with this comprehensive anatomy course for beginners.</div>
+          <div class="topic-tags">
+            <div class="topic-tag">Biology</div>
+            <div class="topic-tag">Anatomy</div>
+            <div class="topic-tag">Health</div>
+          </div>
+          <div class="course-action">
+            <div class="course-price">Free</div>
+            <button class="course-button">Enroll Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Another Educational Post -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-user">
+            <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User" class="post-avatar">
+            <div class="post-username">history_buff</div>
+          </div>
+          <i class="fas fa-ellipsis-h"></i>
+        </div>
+        <div class="post-content">
+          <img src="https://images.unsplash.com/photo-1551406483-3731d1997d03?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80" alt="Historical artifact">
+        </div>
+        <div class="post-actions">
+          <div class="post-actions-left">
+            <button class="action-btn"><i class="fas fa-heart liked"></i></button>
+            <button class="action-btn"><i class="far fa-comment"></i></button>
+            <button class="action-btn"><i class="far fa-paper-plane"></i></button>
+          </div>
+          <button class="action-btn"><i class="fas fa-bookmark"></i></button>
+        </div>
+        <div class="post-likes">3,856 likes</div>
+        <div class="post-caption">
+          <span>history_buff</span>This ancient Egyptian hieroglyphic tablet from 1200 BCE shows early written communication. The symbols represent various words and concepts that were vital to their civilization. #History #AncientEgypt #Archaeology
+        </div>
+        <div class="post-time">8 hours ago</div>
+        <div class="post-comments">
+          <input type="text" placeholder="Add a comment...">
+          <button>Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.add('active');
+    });
+
+    document.querySelector('.close-menu').addEventListener('click', function() {
+      document.querySelector('.mobile-menu').classList.remove('active');
+    });
+
+    // Like functionality
+    document.querySelectorAll('.fa-heart').forEach(heart => {
+      heart.addEventListener('click', function() {
+        this.classList.toggle('far');
+        this.classList.toggle('fas');
+        this.classList.toggle('liked');
+        
+        // Update likes count based on like/unlike
+        const likesElement = this.closest('.post').querySelector('.post-likes');
+        let likesText = likesElement.textContent;
+        let likesCount = parseInt(likesText.replace(/,/g, ''));
+        
+        if (this.classList.contains('liked')) {
+          likesCount++;
+        } else {
+          likesCount--;
+        }
+        
+        likesElement.textContent = new Intl.NumberFormat().format(likesCount) + ' likes';
+      });
+    });
+
+    // Bookmark functionality
+    document.querySelectorAll('.fa-bookmark').forEach(bookmark => {
+      bookmark.addEventListener('click', function() {
+        this.classList.toggle('far');
+        this.classList.toggle('fas');
+      });
+    });
+
+    // Course enrollment functionality
+    document.querySelectorAll('.course-button').forEach(button => {
+      button.addEventListener('click', function() {
+        this.textContent = 'Enrolled';
+        this.disabled = true;
+        this.style.backgroundColor = '#888';
+        alert('You have successfully enrolled in this course!');
+      });
+    });
+
+    // Story click functionality
+    document.querySelectorAll('.story').forEach(story => {
+      story.addEventListener('click', function() {
+        const subject = this.querySelector('.story-username').textContent;
+        alert(`Loading ${subject} educational content...`);
+      });
+    });
+  </script>
+</body>
+</html>

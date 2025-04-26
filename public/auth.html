@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create your Account</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ebe6e6;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    img.logo {
+      width: 220px;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtext {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 2rem;
+      max-width: 300px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 300px;
+    }
+
+    input[type="email"] {
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    button[type="submit"] {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #10a37f;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0f8b6d;
+    }
+
+    .login-link {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .login-link a {
+      color: #10a37f;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 2rem 0;
+      width: 300px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .divider:not(:empty)::before {
+      margin-right: 0.5em;
+    }
+
+    .divider:not(:empty)::after {
+      margin-left: 0.5em;
+    }
+
+    .social-login {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 300px;
+    }
+
+    .social-login button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .social-login button:hover {
+      background-color: #f0f0f0;
+    }
+
+    .social-login button img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .header img {
+      height: 35px;
+      width: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="../logo_icon.png" alt="EduKrack Icon" />
+  </div>
+  
+  <img class="logo" src="../logo.png" alt="EduKrack Logo" />
+  <h1>Let's create your Account!</h1>
+
+
+  <form id="authForm">
+    <input type="email" id="email" placeholder="Email address" required />
+    <button type="submit">Continue</button>
+  </form>
+
+  <div class="login-link">
+    Already have an account? <a href="#">Log in</a>
+  </div>
+
+  <div class="divider">OR</div>
+
+  <div class="social-login">
+    <button><img src="google_icon.webp" alt="Google Logo" /> Continue with Google</button>
+    <button><img src="microsoft_icon.webp" alt="Microsoft Logo" /> Continue with Microsoft Account</button>
+    <button><img src="apple_icon.webp" alt="Apple Logo" /> Continue with Apple</button>
+  </div>
+
+  <script>
+    document.getElementById('authForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        localStorage.setItem('email', email); // Store email in localStorage
+        window.location.href = 'password.html';
+      } else {
+        alert(result.message || 'Invalid credentials. Please try again or create an account.');
+      }
+    });
+  </script>
+</body>
+</html>

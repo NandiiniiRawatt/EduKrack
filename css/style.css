@@ -1,0 +1,130 @@
+/* style.css */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #fafafa;
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    position: fixed;
+    height: 100%;
+  }
+  
+  .sidebar h1 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  /* Logo container styling */
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .logo-container img {
+    max-width: 60px;
+    height: auto;
+    margin-bottom: 0.5rem;
+  }
+  
+  .logo-container h1 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .sidebar a {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: background 0.3s;
+  }
+  
+  .sidebar a:hover {
+    background-color: #333;
+  }
+  
+  .main {
+    margin-left: 250px;
+    padding: 2rem;
+    flex-grow: 1;
+  }
+  
+  .section {
+    background: #fff;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .section h2 {
+    margin-top: 0;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .btn:hover {
+    background-color: #333;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+
+  /* Updated the size of the EduKrack logo */
+  img.logo {
+    width: 1000; /* Increased size */
+    margin-bottom: 2rem;
+  }
+
+  /* Center align the form and button */
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .theme-toggle {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #fff; /* default white for dark mode */
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
