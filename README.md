@@ -1,4 +1,4 @@
-# EduKrack
+# EduKrack: Transform Learning into Engaging Videos
 
 EduKrack is an innovative educational platform that converts complex topics into interactive video lessons using AI technology. This application provides a user-friendly interface for students to learn various educational concepts through conversational AI.
 
@@ -85,7 +85,7 @@ http://localhost:3000
 
 ## Contributors
 
-- Nandinii Rawat
+- Nandiinii Rawatt
 - Servesh Khandwe
 
 ---
