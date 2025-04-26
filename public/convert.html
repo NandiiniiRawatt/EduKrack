@@ -371,6 +371,45 @@
         padding: 12px 15px;
       }
     }
+
+    /* Add typing indicator animation */
+    .typing-indicator {
+      background-color: #f0f0f0;
+      padding: 8px 16px;
+    }
+
+    .dark-theme .typing-indicator {
+      background-color: #333;
+    }
+
+    .typing-indicator .dot {
+      display: inline-block;
+      animation: typing 1.5s infinite ease-in-out;
+      margin-left: 2px;
+    }
+
+    .typing-indicator .dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-indicator .dot:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .typing-indicator .dot:nth-child(3) {
+      animation-delay: 1s;
+    }
+
+    @keyframes typing {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translateY(-3px);
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -387,10 +426,13 @@
           <a href="about.html" class="nav-link">About</a>
           <a href="landingpage.html#features" class="nav-link">Features</a>
           <a href="convert.html" class="nav-link active">Convert</a>
-          <a href="landingpage.html#how-it-works" class="cta-button">Learn More</a>
           <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
             <i class="fas fa-moon"></i>
           </button>
+          <div id="user-account" class="nav-link" style="display: flex; align-items: center; margin-left: 15px;">
+            <span id="user-email"></span>
+            <button id="logout-btn" style="margin-left: 10px; background: none; border: none; color: var(--primary-color); cursor: pointer;">Logout</button>
+          </div>
         </div>
         <button class="mobile-toggle">
           <i class="fas fa-bars"></i>
@@ -413,6 +455,65 @@
   </div>
 
   <script>
+    // Check if we're running on Live Server
+    const isLiveServer = window.location.port === '5500' || 
+                         window.location.port === '5501' || 
+                         window.location.port === '5502';
+    
+    console.log("Live Server detection:", isLiveServer ? "Running on Live Server" : "Not on Live Server");
+    
+    // Check authentication status immediately when page loads
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        if (isLiveServer) {
+          // For Live Server: Check local storage for authentication
+          const authenticated = localStorage.getItem('authenticated') === 'true';
+          let userData = null;
+          
+          try {
+            userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+          } catch (e) {
+            console.error("Error parsing user data:", e);
+          }
+          
+          if (!authenticated || !userData || !userData.email) {
+            // User is not authenticated, redirect to auth page
+            console.log("Live Server: Not authenticated, redirecting to auth page");
+            window.location.href = 'auth.html';
+            return;
+          }
+          
+          // User is authenticated, show username in the header
+          const userAccount = document.getElementById('user-account');
+          const userEmailElement = document.getElementById('user-email');
+          
+          // Show username if available, otherwise show email
+          userEmailElement.textContent = userData.username || userData.email;
+          userAccount.style.display = 'flex';
+        } else {
+          // Regular server-side authentication check
+          const response = await fetch('/api/session');
+          const data = await response.json();
+          
+          if (!data.authenticated) {
+            // User is not authenticated, redirect to auth page
+            window.location.href = '/public/auth.html';
+            return;
+          }
+          
+          // User is authenticated, show username in the header
+          const userAccount = document.getElementById('user-account');
+          const userEmailElement = document.getElementById('user-email');
+          
+          // Show username if available, otherwise show email
+          userEmailElement.textContent = data.user.username || data.user.email;
+          userAccount.style.display = 'flex';
+        }
+      } catch (error) {
+        console.error('Failed to check authentication:', error);
+      }
+    });
+
     // Toggle dark/light theme
     function toggleTheme() {
       document.body.classList.toggle('dark-theme');
@@ -422,7 +523,53 @@
       } else {
         themeIcon.className = 'fas fa-moon';
       }
+      
+      // Save theme preference
+      localStorage.setItem('eduKrackTheme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
     }
+    
+    // Load saved theme preference
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedTheme = localStorage.getItem('eduKrackTheme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.querySelector('.theme-toggle i').className = 'fas fa-sun';
+      }
+    });
+
+    // Handle logout
+    document.getElementById('logout-btn').addEventListener('click', function() {
+      if (isLiveServer) {
+        // Clear local authentication data
+        localStorage.removeItem('email');
+        localStorage.removeItem('authenticated');
+        localStorage.removeItem('currentUser');
+        
+        // Redirect to about page
+        window.location.href = 'about.html';
+        return;
+      }
+      
+      fetch('/api/logout')
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            // Clear local storage
+            localStorage.removeItem('email');
+            localStorage.removeItem('authenticated');
+            localStorage.removeItem('currentUser');
+            
+            // Redirect to landing page after successful logout
+            window.location.href = '/public/landingpage.html';
+          } else {
+            alert('Logout failed. Please try again.');
+          }
+        })
+        .catch(error => {
+          console.error('Logout error:', error);
+          alert('An error occurred during logout.');
+        });
+    });
 
     // Handle sending messages
     document.getElementById('sendButton').addEventListener('click', sendMessage);
@@ -431,6 +578,15 @@
         sendMessage();
       }
     });
+
+    // Mock responses for Live Server mode
+    const mockResponses = [
+      "I'll create a video lesson on that topic! We would start with an engaging introduction, then break down the key concepts with visual aids and animations. Each point would be explained clearly with examples.",
+      "Great topic choice! For a video lesson, I'd structure it with an overview first, then dive into specific examples with visual demonstrations. We'd conclude with practice questions to reinforce learning.",
+      "That would make an excellent video lesson! I'd approach it by first explaining the fundamental principles, then using animated diagrams to show how they work in practice. It would include interactive elements to keep learners engaged.",
+      "I can convert that into an engaging video lesson. The content would include historical context, key theories, and practical applications. Visual animations would help illustrate complex concepts in an accessible way.",
+      "For this video lesson, I'd create a narrative structure that builds the concept from basic principles to advanced applications. We'd use multiple examples and colorful visualizations to ensure understanding."
+    ];
 
     function sendMessage() {
       const userMessage = document.getElementById('userMessage').value.trim();
@@ -446,8 +602,34 @@
       // Clear input
       document.getElementById('userMessage').value = '';
 
+      // Show typing indicator
+      const typingDiv = document.createElement('div');
+      typingDiv.classList.add('message', 'ai-message', 'typing-indicator');
+      typingDiv.innerHTML = 'EduKrack is thinking<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
+      chatContent.appendChild(typingDiv);
+
       // Scroll to bottom
       chatContent.scrollTop = chatContent.scrollHeight;
+
+      if (isLiveServer) {
+        // In Live Server mode, use mock responses instead of making API calls
+        setTimeout(() => {
+          // Remove typing indicator
+          chatContent.removeChild(typingDiv);
+          
+          // Get random response from mock responses
+          const randomIndex = Math.floor(Math.random() * mockResponses.length);
+          const mockReply = mockResponses[randomIndex];
+          
+          // Add AI response to chat
+          const aiMessageDiv = document.createElement('div');
+          aiMessageDiv.classList.add('message', 'ai-message');
+          aiMessageDiv.textContent = mockReply;
+          chatContent.appendChild(aiMessageDiv);
+          chatContent.scrollTop = chatContent.scrollHeight;
+        }, 1500); // Simulate API delay
+        return;
+      }
 
       // Send to backend and get response
       fetch('/api/generate-reply', {
@@ -459,6 +641,10 @@
       })
         .then(response => response.json())
         .then(data => {
+          // Remove typing indicator
+          chatContent.removeChild(typingDiv);
+          
+          // Add AI response to chat
           const aiMessageDiv = document.createElement('div');
           aiMessageDiv.classList.add('message', 'ai-message');
           aiMessageDiv.textContent = data.reply;
@@ -466,6 +652,9 @@
           chatContent.scrollTop = chatContent.scrollHeight;
         })
         .catch(error => {
+          // Remove typing indicator
+          chatContent.removeChild(typingDiv);
+          
           console.error('Error:', error);
           const aiMessageDiv = document.createElement('div');
           aiMessageDiv.classList.add('message', 'ai-message');

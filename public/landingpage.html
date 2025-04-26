@@ -504,31 +504,161 @@
       z-index: 1;
     }
 
-    .particle {
+    /* 3D Mathematical and Physics Objects Animation - Updated for larger, stationary elements */
+    .math-objects-container {
       position: absolute;
-      width: 3px;
-      height: 3px;
-      background: var(--primary-color);
-      border-radius: 50%;
-      opacity: 0.4;
-      animation: float 15s infinite linear;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
     }
-
-    @keyframes float {
-      0% {
-        transform: translateY(0) translateX(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 0.8;
-      }
-      90% {
-        opacity: 0.8;
-      }
-      100% {
-        transform: translateY(-500px) translateX(100px);
-        opacity: 0;
-      }
+    
+    .math-object {
+      position: absolute;
+      opacity: 0.7;
+      transform-style: preserve-3d;
+      color: var(--primary-color);
+      font-size: 7rem;
+    }
+    
+    /* Mathematical symbol */
+    .math-symbol {
+      font-family: 'Times New Roman', serif;
+      font-weight: bold;
+      text-shadow: 0 0 20px rgba(16, 163, 127, 0.8);
+    }
+    
+    /* Physics tool */
+    .physics-tool {
+      font-size: 6rem;
+    }
+    
+    /* Geometric shapes */
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 80px solid transparent;
+      border-right: 80px solid transparent;
+      border-bottom: 140px solid;
+    }
+    
+    .square {
+      width: 120px;
+      height: 120px;
+      border: 5px solid;
+    }
+    
+    .circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 5px solid;
+    }
+    
+    /* For 3D cube */
+    .cube {
+      width: 150px;
+      height: 150px;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+    
+    .cube-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 4px solid var(--primary-color);
+      opacity: 0.6;
+      background-color: rgba(16, 163, 127, 0.05);
+    }
+    
+    .cube-face-front { transform: translateZ(75px); }
+    .cube-face-back { transform: translateZ(-75px); }
+    .cube-face-right { transform: rotateY(90deg) translateZ(75px); }
+    .cube-face-left { transform: rotateY(-90deg) translateZ(75px); }
+    .cube-face-top { transform: rotateX(90deg) translateZ(75px); }
+    .cube-face-bottom { transform: rotateX(-90deg) translateZ(75px); }
+    
+    /* Animated rotation classes */
+    .rotate-slow {
+      animation: rotate3d 25s infinite linear;
+    }
+    
+    .rotate-slower {
+      animation: rotate3d-reverse 35s infinite linear;
+    }
+    
+    .pulse {
+      animation: pulse 8s infinite ease-in-out;
+    }
+    
+    @keyframes rotate3d {
+      from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+      to { transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg); }
+    }
+    
+    @keyframes rotate3d-reverse {
+      from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+      to { transform: rotateX(-180deg) rotateY(360deg) rotateZ(-90deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 0.9; }
+    }
+    
+    /* Specific positions for each element - spread more evenly across the page */
+    .top-left {
+      top: 15%;
+      left: 15%;
+    }
+    
+    .top-right {
+      top: 15%;
+      right: 15%;
+    }
+    
+    .bottom-left {
+      bottom: 15%;
+      left: 15%;
+    }
+    
+    .bottom-right {
+      bottom: 15%;
+      right: 15%;
+    }
+    
+    .center {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .top-center {
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .bottom-center {
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .center-left {
+      top: 50%;
+      left: 5%;
+      transform: translateY(-50%);
+    }
+    
+    .center-right {
+      top: 50%;
+      right: 5%;
+      transform: translateY(-50%);
     }
 
     /* Glow Effect */
@@ -675,11 +805,11 @@
           <span class="logo-text">EduKrack</span>
         </a>
         <div class="nav-links">
-          <a href="index.html" class="nav-link">Home</a>
+          <a href="index.html" class="nav-link protected-link">Home</a>
           <a href="#features" class="nav-link">Features</a>
           <a href="#how-it-works" class="nav-link">How It Works</a>
           <a href="about.html" class="nav-link">About</a>
-          <a href="convert.html" class="cta-button">Try Now</a>
+          <a href="convert.html" class="cta-button protected-link">Try Now</a>
         </div>
         <button class="mobile-toggle">
           <i class="fas fa-bars"></i>
@@ -694,25 +824,33 @@
       <i class="fas fa-times"></i>
     </button>
     <div class="mobile-nav-links">
-      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="index.html" class="mobile-nav-link protected-link">Home</a>
       <a href="#features" class="mobile-nav-link">Features</a>
       <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
       <a href="about.html" class="mobile-nav-link">About</a>
-      <a href="convert.html" class="mobile-nav-link">Try Now</a>
+      <a href="convert.html" class="mobile-nav-link protected-link">Try Now</a>
     </div>
   </div>
 
   <!-- Hero Section -->
   <section class="hero-section">
-    <div class="floating-particles">
-      <div class="particle" style="top: 20%; left: 10%; animation-duration: 20s;"></div>
-      <div class="particle" style="top: 70%; left: 20%; animation-duration: 15s;"></div>
-      <div class="particle" style="top: 40%; left: 50%; animation-duration: 18s;"></div>
-      <div class="particle" style="top: 60%; left: 80%; animation-duration: 22s;"></div>
-      <div class="particle" style="top: 30%; left: 30%; animation-duration: 19s;"></div>
-      <div class="particle" style="top: 80%; left: 40%; animation-duration: 17s;"></div>
-      <div class="particle" style="top: 10%; left: 60%; animation-duration: 16s;"></div>
-      <div class="particle" style="top: 50%; left: 70%; animation-duration: 21s;"></div>
+    <div class="floating-particles"></div>
+    <div class="math-objects-container">
+      <div class="math-object math-symbol top-left">∑</div>
+      <div class="math-object physics-tool top-right">⚛</div>
+      <div class="math-object math-symbol top-center">π</div>
+      <div class="math-object triangle bottom-left" style="border-bottom-color: rgba(16, 163, 127, 0.7);"></div>
+      <div class="math-object square bottom-right" style="border-color: rgba(16, 163, 127, 0.7);"></div>
+      <div class="math-object circle center-left" style="border-color: rgba(16, 163, 127, 0.7);"></div>
+      <div class="math-object math-symbol center">∞</div>
+      <div class="math-object cube center-right">
+        <div class="cube-face cube-face-front"></div>
+        <div class="cube-face cube-face-back"></div>
+        <div class="cube-face cube-face-right"></div>
+        <div class="cube-face cube-face-left"></div>
+        <div class="cube-face cube-face-top"></div>
+        <div class="cube-face cube-face-bottom"></div>
+      </div>
     </div>
     <div class="glow"></div>
     <div class="glow glow-2"></div>
@@ -724,7 +862,7 @@
             EduKrack converts your learning topics into dynamic educational videos in seconds. Boost comprehension and retention with AI-powered video lessons.
           </p>
           <div class="hero-buttons">
-            <a href="convert.html" class="cta-button">Get Started Now</a>
+            <a href="convert.html" class="cta-button protected-link">Get Started Now</a>
             <a href="#how-it-works" class="secondary-button">
               <i class="fas fa-play-circle"></i> Learn How It Works
             </a>
@@ -800,7 +938,7 @@
             <p class="step-description">
               Type any educational topic, question, or concept into EduKrack's conversion tool. Be as specific or general as you like.
             </p>
-            <a href="convert.html" class="secondary-button">Try It Now</a>
+            <a href="convert.html" class="secondary-button protected-link">Try It Now</a>
           </div>
           <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');">
           </div>
@@ -825,7 +963,7 @@
             <p class="step-description">
               Watch your personalized video lesson, reinforce your understanding, and share it with classmates, students, or friends for collaborative learning.
             </p>
-            <a href="convert.html" class="secondary-button">Start Converting</a>
+            <a href="convert.html" class="secondary-button protected-link">Start Converting</a>
           </div>
           <div class="step-image" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1771&q=80');">
           </div>
@@ -841,7 +979,7 @@
       <p class="cta-description">
         Join thousands of students and educators using EduKrack to convert complex topics into engaging video lessons.
       </p>
-      <a href="convert.html" class="cta-button-large">Get Started for Free</a>
+      <a href="convert.html" class="cta-button-large protected-link">Get Started for Free</a>
     </div>
   </section>
 
@@ -868,7 +1006,7 @@
         <div>
           <h4 class="footer-heading">Platform</h4>
           <ul class="footer-links">
-            <li><a href="convert.html" class="footer-link">Convert Tool</a></li>
+            <li><a href="convert.html" class="footer-link protected-link">Convert Tool</a></li>
             <li><a href="#" class="footer-link">Browse Topics</a></li>
             <li><a href="#" class="footer-link">Resources</a></li>
             <li><a href="#" class="footer-link">Educators</a></li>
@@ -930,18 +1068,150 @@
     document.querySelector('.play-button').addEventListener('click', function() {
       alert('Video player would launch here in the production version');
     });
-
-    // Add more floating particles dynamically
-    const particles = document.querySelector('.floating-particles');
-    for (let i = 0; i < 20; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('particle');
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
-      particle.style.animationDelay = (Math.random() * 10) + 's';
-      particles.appendChild(particle);
-    }
+    
+    // Initialize 3D object animations
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add animation classes to the math objects
+      const mathObjects = document.querySelectorAll('.math-object');
+      
+      mathObjects.forEach(object => {
+        // Add appropriate animations based on object type
+        if (object.classList.contains('triangle')) {
+          object.classList.add('rotate-slow');
+        } 
+        else if (object.classList.contains('circle')) {
+          object.classList.add('pulse');
+        }
+        else if (object.classList.contains('square')) {
+          object.classList.add('rotate-slower');
+        }
+        else if (object.classList.contains('physics-tool')) {
+          object.classList.add('pulse');
+        }
+        else if (object.classList.contains('math-symbol')) {
+          // Check if it's the Pi or Infinity symbol (don't add cursor-reactive movement)
+          if (object.textContent === 'π' || object.textContent === '∞') {
+            object.classList.add('pulse');
+            // Adding a data attribute to identify them
+            object.dataset.static = 'true';
+          } else {
+            object.classList.add('pulse');
+          }
+        }
+      });
+      
+      // Mouse movement parallax effect
+      document.addEventListener('mousemove', function(e) {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        mathObjects.forEach(obj => {
+          // Skip the cube, Pi symbol, and Infinity symbol
+          if (!obj.classList.contains('cube') && obj.dataset.static !== 'true') {
+            const moveX = (x - 0.5) * 20;
+            const moveY = (y - 0.5) * 20;
+            obj.style.transform = `translate(${moveX}px, ${moveY}px) ${obj.classList.contains('rotate-slow') ? 'rotate3d(1, 1, 1, ' + (x * 360) + 'deg)' : obj.classList.contains('rotate-slower') ? 'rotate3d(1, 1, 1, ' + (y * 360) + 'deg)' : ''}`;
+          }
+        });
+      });
+      
+      // Independently animate the cube
+      const cube = document.querySelector('.cube');
+      if (cube) {
+        cube.style.animation = 'rotate3d 30s infinite linear';
+      }
+    });
+    
+    // Authentication handling
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if we're running on Live Server
+      const isLiveServer = window.location.port === '5500' || 
+                           window.location.port === '5501' || 
+                           window.location.port === '5502';
+      
+      console.log("Live Server detection:", isLiveServer ? "Running on Live Server" : "Not on Live Server");
+      
+      // Function to check if user is logged in
+      function isLoggedIn() {
+        // When using Live Server, we'll bypass authentication for testing
+        if (isLiveServer) {
+          return true; // Always return logged in for Live Server
+        }
+        return localStorage.getItem('email') && localStorage.getItem('authenticated') === 'true';
+      }
+      
+      // Function to handle protected link clicks
+      function handleProtectedLinks() {
+        const protectedLinks = document.querySelectorAll('.protected-link');
+        protectedLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            if (!isLoggedIn()) {
+              e.preventDefault();
+              // Store the intended destination
+              localStorage.setItem('redirectAfterLogin', this.getAttribute('href'));
+              window.location.href = 'auth.html';
+            } else if (isLiveServer) {
+              // On Live Server, just navigate normally without checking authentication
+              // No need to prevent default
+            }
+          });
+        });
+      }
+      
+      // Function to update navigation based on auth status
+      function updateNavigation() {
+        const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+        const ctaButtons = document.querySelectorAll('.cta-button');
+        
+        // Add user menu if logged in or if we're in Live Server mode
+        const nav = document.querySelector('.nav-links');
+        if (isLoggedIn() && !document.querySelector('#user-menu')) {
+          // User is logged in
+          const email = isLiveServer ? "test@example.com (Live Server Mode)" : localStorage.getItem('email');
+          const userMenuHTML = `
+            <div class="nav-link" id="user-menu">
+              <span>${email}</span>
+              <a href="#" id="logout-btn" style="margin-left: 10px; color: var(--primary-color);">Logout</a>
+            </div>
+          `;
+          nav.insertAdjacentHTML('beforeend', userMenuHTML);
+          
+          // Add logout functionality
+          document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('email');
+            localStorage.removeItem('authenticated');
+            window.location.reload();
+          });
+        }
+        
+        // Mark protected links
+        navLinks.forEach(link => {
+          const href = link.getAttribute('href');
+          if (href === 'index.html' || href === 'convert.html') {
+            link.classList.add('protected-link');
+          }
+        });
+        
+        ctaButtons.forEach(button => {
+          if (button.getAttribute('href') === 'convert.html') {
+            button.classList.add('protected-link');
+          }
+        });
+        
+        // Apply protection
+        handleProtectedLinks();
+      }
+      
+      // If running on Live Server, simulate being logged in
+      if (isLiveServer) {
+        localStorage.setItem('email', 'test@example.com');
+        localStorage.setItem('authenticated', 'true');
+        console.log("Live Server detected: Authentication bypass enabled");
+      }
+      
+      updateNavigation();
+    });
   </script>
 </body>
 </html>

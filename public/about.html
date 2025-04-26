@@ -822,6 +822,104 @@
     document.querySelector('.close-menu').addEventListener('click', function() {
       document.querySelector('.mobile-menu').classList.remove('active');
     });
+    
+    // Live Server compatibility for authentication
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if we're running on Live Server
+      const isLiveServer = window.location.port === '5500' || 
+                           window.location.port === '5501' || 
+                           window.location.port === '5502';
+      
+      console.log("Live Server detection:", isLiveServer ? "Running on Live Server" : "Not on Live Server");
+      
+      // Function to check if user is logged in
+      function isLoggedIn() {
+        // When using Live Server, we'll bypass authentication for testing
+        if (isLiveServer) {
+          return true; // Always return logged in for Live Server
+        }
+        return localStorage.getItem('email') && localStorage.getItem('authenticated') === 'true';
+      }
+      
+      // Function to handle protected link clicks
+      function handleProtectedLinks() {
+        const protectedLinks = document.querySelectorAll('.protected-link');
+        protectedLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            if (!isLoggedIn()) {
+              e.preventDefault();
+              // Store the intended destination
+              localStorage.setItem('redirectAfterLogin', this.getAttribute('href'));
+              window.location.href = 'auth.html';
+            }
+            // For Live Server, just navigate normally
+          });
+        });
+      }
+      
+      // Add protected class to links that require auth
+      function markProtectedLinks() {
+        const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+        navLinks.forEach(link => {
+          const href = link.getAttribute('href');
+          if (href === 'index.html' || href === 'convert.html') {
+            link.classList.add('protected-link');
+          }
+        });
+        
+        // Also check the "Try Now" button
+        const ctaButtons = document.querySelectorAll('.cta-button');
+        ctaButtons.forEach(button => {
+          if (button.getAttribute('href') === 'convert.html') {
+            button.classList.add('protected-link');
+          }
+        });
+      }
+      
+      // If running on Live Server, simulate being logged in
+      if (isLiveServer) {
+        localStorage.setItem('email', 'test@example.com');
+        localStorage.setItem('authenticated', 'true');
+        console.log("Live Server detected: Authentication bypass enabled");
+      }
+      
+      // Add user menu if logged in
+      function updateNavigation() {
+        if (isLoggedIn() && !document.querySelector('#user-menu')) {
+          const email = isLiveServer ? "test@example.com (Live Server Mode)" : localStorage.getItem('email');
+          const nav = document.querySelector('.nav-links');
+          
+          const userMenuHTML = `
+            <div class="nav-link" id="user-menu">
+              <span>${email}</span>
+              <a href="#" id="logout-btn" style="margin-left: 10px; color: var(--primary-color);">Logout</a>
+            </div>
+          `;
+          
+          nav.insertAdjacentHTML('beforeend', userMenuHTML);
+          
+          // Add logout functionality
+          document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('email');
+            localStorage.removeItem('authenticated');
+            localStorage.removeItem('currentUser');
+            
+            // Redirect to login page instead of just reloading
+            if (isLiveServer) {
+              window.location.href = 'auth.html';
+            } else {
+              window.location.href = '/public/auth.html';
+            }
+          });
+        }
+      }
+      
+      // Initialize authentication components
+      markProtectedLinks();
+      handleProtectedLinks();
+      updateNavigation();
+    });
   </script>
 </body>
 </html>

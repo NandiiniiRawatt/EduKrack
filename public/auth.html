@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create your Account</title>
+  <title>EduKrack - Authentication</title>
   <style>
     body {
       margin: 0;
@@ -41,12 +41,28 @@
       width: 300px;
     }
 
-    input[type="email"] {
+    input {
       padding: 0.75rem;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 1rem;
       width: 100%;
+    }
+
+    .password-field {
+      display: none;
+    }
+
+    .login-mode .password-field {
+      display: block;
+    }
+
+    .username-field {
+      display: none;
+    }
+
+    .signup-mode .username-field {
+      display: block;
     }
 
     button[type="submit"] {
@@ -144,6 +160,13 @@
       height: 35px;
       width: auto;
     }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -154,42 +177,284 @@
   <img class="logo" src="../logo.png" alt="EduKrack Logo" />
   <h1>Let's create your Account!</h1>
 
-
   <form id="authForm">
     <input type="email" id="email" placeholder="Email address" required />
-    <button type="submit">Continue</button>
+    <div class="username-field">
+      <input type="text" id="username" placeholder="Username" />
+    </div>
+    <div class="password-field">
+      <input type="password" id="password" placeholder="Password" />
+    </div>
+    <div class="error-message" id="errorMessage"></div>
+    <button type="submit" id="submitButton">Continue</button>
   </form>
 
   <div class="login-link">
-    Already have an account? <a href="#">Log in</a>
+    Already have an account? <a href="#" id="loginToggle">Log in</a>
   </div>
 
   <div class="divider">OR</div>
 
   <div class="social-login">
-    <button><img src="google_icon.webp" alt="Google Logo" /> Continue with Google</button>
-    <button><img src="microsoft_icon.webp" alt="Microsoft Logo" /> Continue with Microsoft Account</button>
-    <button><img src="apple_icon.webp" alt="Apple Logo" /> Continue with Apple</button>
+    <button type="button" class="social-button"><img src="../google_icon.webp" alt="Google Logo" /> Continue with Google</button>
+    <button type="button" class="social-button"><img src="../microsoft_icon.webp" alt="Microsoft Logo" /> Continue with Microsoft Account</button>
+    <button type="button" class="social-button"><img src="../apple_icon.webp" alt="Apple Logo" /> Continue with Apple</button>
   </div>
 
   <script>
-    document.getElementById('authForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const response = await fetch('/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+    // Element references
+    const form = document.getElementById('authForm');
+    const heading = document.querySelector('h1');
+    const loginToggle = document.getElementById('loginToggle');
+    const loginLink = document.querySelector('.login-link');
+    const emailInput = document.getElementById('email');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const submitButton = document.getElementById('submitButton');
+    const errorMessage = document.getElementById('errorMessage');
 
-      const result = await response.json();
-      if (result.success) {
-        localStorage.setItem('email', email); // Store email in localStorage
-        window.location.href = 'password.html';
+    // Check if we're running on Live Server
+    const isLiveServer = window.location.port === '5500' || 
+                         window.location.port === '5501' || 
+                         window.location.port === '5502';
+    
+    console.log("Live Server detection:", isLiveServer ? "Running on Live Server" : "Not on Live Server");
+
+    // Function to show error message
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+    }
+
+    // Function to clear error message
+    function clearError() {
+      errorMessage.textContent = '';
+      errorMessage.style.display = 'none';
+    }
+
+    // Toggle between login and signup modes
+    function toggleMode() {
+      if (form.classList.contains('login-mode')) {
+        // Switch to signup mode
+        form.classList.remove('login-mode');
+        form.classList.add('signup-mode');
+        heading.textContent = 'Let\'s create your Account!';
+        loginToggle.textContent = 'Log in';
+        loginLink.innerHTML = 'Already have an account? <a href="#" id="loginToggle">Log in</a>';
+        submitButton.textContent = 'Continue';
+        passwordInput.value = '';
+        
+        // Show username field in signup mode
+        document.querySelector('.username-field').style.display = 'block';
       } else {
-        alert(result.message || 'Invalid credentials. Please try again or create an account.');
+        // Switch to login mode
+        form.classList.add('login-mode');
+        form.classList.remove('signup-mode');
+        heading.textContent = 'Log in to your Account';
+        loginToggle.textContent = 'Sign up';
+        loginLink.innerHTML = 'Don\'t have an account? <a href="#" id="loginToggle">Sign up</a>';
+        submitButton.textContent = 'Log in';
+        
+        // Hide username field in login mode
+        document.querySelector('.username-field').style.display = 'none';
+      }
+      
+      // Re-attach event listener to the toggle link
+      document.getElementById('loginToggle').addEventListener('click', function(e) {
+        e.preventDefault();
+        clearError();
+        toggleMode();
+      });
+    }
+
+    // Initial event listener for toggle
+    loginToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      clearError();
+      toggleMode();
+    });
+
+    // Initialize styles for username field
+    document.addEventListener('DOMContentLoaded', function() {
+      // By default, we start in signup mode
+      if (!form.classList.contains('login-mode')) {
+        document.querySelector('.username-field').style.display = 'block';
+      } else {
+        document.querySelector('.username-field').style.display = 'none';
+      }
+    });
+
+    // Form submission handler
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      clearError();
+
+      const email = emailInput.value.trim();
+      const isLoginMode = form.classList.contains('login-mode');
+      let requestData = {};
+
+      // Basic email validation
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        showError('Please enter a valid email address');
+        return;
+      }
+
+      // On Live Server, handle authentication locally
+      if (isLiveServer) {
+        // Store email in localStorage
+        localStorage.setItem('email', email);
+        
+        if (isLoginMode) {
+          // Login mode - check against stored credentials
+          const password = passwordInput.value;
+          if (!password) {
+            showError('Password is required');
+            return;
+          }
+          
+          // Check if user exists and password matches
+          const userData = JSON.parse(localStorage.getItem(`user_${email}`) || '{}');
+          if (!userData.password) {
+            showError('User not found. Please sign up first.');
+            return;
+          } 
+          
+          if (userData.password !== password) {
+            showError('Invalid password. Please try again.');
+            return;
+          }
+          
+          // Successful login
+          localStorage.setItem('authenticated', 'true');
+          localStorage.setItem('currentUser', JSON.stringify({
+            email: email,
+            username: userData.username
+          }));
+          
+          console.log("Live Server: Login successful");
+          const redirectTo = localStorage.getItem('redirectAfterLogin') || 'index.html';
+          localStorage.removeItem('redirectAfterLogin');
+          window.location.href = redirectTo;
+        } else {
+          // Signup mode - store user
+          const username = usernameInput.value.trim();
+          if (!username) {
+            showError('Username is required');
+            return;
+          }
+          
+          // Check if the user already exists
+          const existingUser = localStorage.getItem(`user_${email}`);
+          if (existingUser) {
+            showError('Email already exists. Please log in or use a different email.');
+            return;
+          }
+          
+          // Store the username and email for the password creation page
+          localStorage.setItem('email', email);
+          localStorage.setItem('username', username);
+          
+          console.log("Live Server: Creating new user");
+          // Redirect to password creation page
+          window.location.href = '../password.html';
+        }
+        return;
+      }
+
+      // Regular server-based authentication
+      try {
+        submitButton.disabled = true;
+        submitButton.textContent = isLoginMode ? 'Logging in...' : 'Processing...';
+        
+        if (isLoginMode) {
+          // Login mode requires password
+          const password = passwordInput.value;
+          if (!password) {
+            showError('Password is required');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Log in';
+            return;
+          }
+          requestData = { email, password, mode: 'login' };
+        } else {
+          // Signup mode needs username
+          const username = usernameInput.value.trim();
+          if (!username) {
+            showError('Username is required');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Continue';
+            return;
+          }
+          
+          // Store username in localStorage for the password creation page
+          localStorage.setItem('username', username);
+          
+          // Signup mode just needs email and username
+          requestData = { email, username, mode: 'signup' };
+        }
+
+        // Store email in localStorage for persistence between pages
+        localStorage.setItem('email', email);
+
+        const response = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestData)
+        });
+
+        const result = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(result.message || 'Authentication failed');
+        }
+
+        if (result.success) {
+          if (isLoginMode) {
+            // Login successful - use server-provided redirect URL
+            localStorage.setItem('authenticated', 'true');
+            localStorage.setItem('currentUser', JSON.stringify({
+              email: email,
+              username: result.username
+            }));
+            window.location.href = result.redirectTo || '/public/index.html';
+          } else {
+            // Signup successful - redirect to password creation
+            console.log('Signup successful, redirecting to password creation');
+            window.location.href = '/password.html';
+          }
+        } else {
+          throw new Error(result.message || 'Authentication failed');
+        }
+      } catch (error) {
+        showError(error.message || 'An unexpected error occurred');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = isLoginMode ? 'Log in' : 'Continue';
+      }
+    });
+
+    // Social login buttons (placeholder functionality)
+    document.querySelectorAll('.social-button').forEach(button => {
+      button.addEventListener('click', function() {
+        alert('Social login integration coming soon!');
+      });
+    });
+
+    // Check if redirected from a protected page or password creation
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirect = urlParams.get('redirect');
+      const loginMode = urlParams.get('login');
+      
+      if (redirect) {
+        localStorage.setItem('redirectAfterLogin', redirect);
+      }
+      
+      // If coming from password creation, switch to login mode
+      if (loginMode === 'true') {
+        if (!form.classList.contains('login-mode')) {
+          toggleMode(); // Switch to login mode
+        }
       }
     });
   </script>
