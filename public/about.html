@@ -271,6 +271,15 @@
       margin-bottom: 30px;
       color: #424245;
     }
+    
+    /* About Section Styling */
+    .about {
+      background-color: #f5f5f7;
+    }
+    
+    .about p {
+      color: #424245;
+    }
 
     /* Mission Section */
     .mission {
@@ -366,6 +375,49 @@
       background-position: center;
       border-radius: 12px;
       overflow: hidden;
+    }
+    
+    .feature-video-container {
+      flex: 1;
+      height: 400px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .feature-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    
+    .video-play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background-color: rgba(16, 163, 127, 0.8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background-color 0.3s ease;
+    }
+    
+    .video-play-button:hover {
+      background-color: rgba(16, 163, 127, 1);
+    }
+    
+    .video-play-button i {
+      font-size: 30px;
+      color: white;
+      margin-left: 8px; /* Offset to center the triangle icon */
     }
 
     .feature-block h3 {
@@ -595,15 +647,15 @@
   <header>
     <div class="container">
       <nav>
-        <a href="about.html" class="logo">
-          <img src="../logo_icon.png" alt="EduKrack Icon">
+        <a href="/about.html" class="logo">
+          <img src="/logo_icon.png" alt="EduKrack Icon">
           <span class="logo-text">EduKrack</span>
         </a>
         <div class="nav-links">
-          <a href="index.html" class="nav-link">Feed</a>
-          <a href="about.html" class="nav-link active">About</a>
-          <a href="landingpage.html#features" class="nav-link">Features</a>
-          <a href="convert.html" class="cta-button">Try Now</a>
+          <a href="/index.html" class="nav-link">Feed</a>
+          <a href="/about.html" class="nav-link active">About</a>
+          <a href="/landingpage.html#features" class="nav-link">Features</a>
+          <a href="/convert.html" class="cta-button">Try Now</a>
         </div>
         <button class="mobile-toggle">
           <i class="fas fa-bars"></i>
@@ -618,10 +670,10 @@
       <i class="fas fa-times"></i>
     </button>
     <div class="mobile-nav-links">
-      <a href="index.html" class="mobile-nav-link">Feed</a>
-      <a href="about.html" class="mobile-nav-link">About</a>
-      <a href="landingpage.html#features" class="mobile-nav-link">Features</a>
-      <a href="convert.html" class="mobile-nav-link">Try Now</a>
+      <a href="/index.html" class="mobile-nav-link">Feed</a>
+      <a href="/about.html" class="mobile-nav-link">About</a>
+      <a href="/landingpage.html#features" class="mobile-nav-link">Features</a>
+      <a href="/convert.html" class="mobile-nav-link">Try Now</a>
     </div>
   </div>
 
@@ -634,7 +686,7 @@
   </section>
 
   <!-- About Section -->
-  <section class="section">
+  <section class="section about">
     <div class="section-container">
       <h2>Our Story</h2>
       <p>
@@ -696,6 +748,7 @@
             the key concepts, and creates visually appealing explanations tailored to 
             different learning styles.
           </p>
+          <a href="demo-video.html" class="cta-button" style="margin-top: 15px;">Try Demo</a>
         </div>
         <div class="feature-image" style="background-image: url('https://images.unsplash.com/photo-1526378800651-c5b56581afff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1776&q=80');"></div>
       </div>
@@ -772,12 +825,12 @@
         <div class="contact-item">
           <div class="contact-icon">📱</div>
           <h3>Phone</h3>
-          <p>+1 (555) 123-4567</p>
+          <p>+49 (1575) 855 9929</p>
         </div>
         <div class="contact-item">
           <div class="contact-icon">📍</div>
           <h3>Location</h3>
-          <p>123 Education Lane<br>Knowledge City, CA 94000</p>
+          <p>Max Planck Strasse 27<br>Heilbronn, Germany 74081</p>
         </div>
       </div>
     </div>
@@ -831,6 +884,27 @@
                            window.location.port === '5502';
       
       console.log("Live Server detection:", isLiveServer ? "Running on Live Server" : "Not on Live Server");
+      
+      // Video play button functionality
+      const videoPlayButton = document.getElementById('feature-video-play');
+      const featureVideo = document.querySelector('.feature-video');
+      
+      if (videoPlayButton && featureVideo) {
+        videoPlayButton.addEventListener('click', function() {
+          featureVideo.play();
+          videoPlayButton.style.display = 'none';
+        });
+        
+        // Show play button again when video ends
+        featureVideo.addEventListener('ended', function() {
+          videoPlayButton.style.display = 'flex';
+        });
+        
+        // Show play button again when video is paused
+        featureVideo.addEventListener('pause', function() {
+          videoPlayButton.style.display = 'flex';
+        });
+      }
       
       // Function to check if user is logged in
       function isLoggedIn() {
@@ -886,12 +960,26 @@
       // Add user menu if logged in
       function updateNavigation() {
         if (isLoggedIn() && !document.querySelector('#user-menu')) {
-          const email = isLiveServer ? "test@example.com (Live Server Mode)" : localStorage.getItem('email');
+          let displayName = "User";
+          
+          // Try to get username from currentUser object first
+          try {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.username) {
+              displayName = currentUser.username;
+            } else if (currentUser.email) {
+              displayName = currentUser.email;
+            }
+          } catch (e) {
+            // Fallback to email if JSON parsing fails
+            displayName = localStorage.getItem('email') || "User";
+          }
+          
           const nav = document.querySelector('.nav-links');
           
           const userMenuHTML = `
             <div class="nav-link" id="user-menu">
-              <span>${email}</span>
+              <span>${displayName}</span>
               <a href="#" id="logout-btn" style="margin-left: 10px; color: var(--primary-color);">Logout</a>
             </div>
           `;

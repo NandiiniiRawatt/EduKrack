@@ -41,27 +41,38 @@ const isAuthenticated = (req, res, next) => {
   res.redirect('/public/auth.html');
 };
 
-// Routes should be checked before static files
+// Serve static files first for better file access
+app.use(express.static(path.join(__dirname)));
+
+// Routes should be after static files for this case
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'about.html'));
 });
 
-// Protected routes
-app.get('/public/index.html', isAuthenticated);
-app.get('/public/convert.html', isAuthenticated);
-
-// Unprotected routes (explicitly defined)
-// These routes do not require authentication
-app.get('/public/about.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'about.html'));
-});
-
-app.get('/public/landingpage.html', (req, res) => {
+// Additional explicit routes for HTML files
+app.get('/landingpage.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'landingpage.html'));
 });
 
-// Serve static files after routes are checked
-app.use(express.static(path.join(__dirname, '/')));
+app.get('/about.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'about.html'));
+});
+
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/convert.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'convert.html'));
+});
+
+app.get('/auth.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'auth.html'));
+});
+
+app.get('/demo-video.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'demo-video.html'));
+});
 
 // Helper functions for user management with JSON file
 function getUsers() {
