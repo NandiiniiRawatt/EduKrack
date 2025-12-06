@@ -449,12 +449,34 @@
       </div>
     </div>
     <div class="user-input">
+      <div class="upload-section" style="display:flex; align-items:center; gap:10px; margin-right:10px;">
+        <input type="file" id="slideInput" accept=".pdf,.png,.jpg,.jpeg" style="display:none;" />
+        <button id="uploadBtn" class="cta-button" type="button"> <i class="fas fa-file-upload"></i> Upload Slide</button>
+      </div>
       <input type="text" id="userMessage" placeholder="Type your topic here..." />
       <button id="sendButton"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+    <div id="videoContainer" style="display:none; padding:20px; background:#fff; border-top:1px solid #eee;">
+      <h3 style="margin-bottom:10px;">Your AI Lesson</h3>
+      <video id="lessonVideo" controls width="100%" style="border-radius:12px; background:#000;"></video>
     </div>
   </div>
 
   <script>
+    // Wire upload button
+    document.addEventListener('DOMContentLoaded', function() {
+      const uploadBtn = document.getElementById('uploadBtn');
+      const slideInput = document.getElementById('slideInput');
+      uploadBtn.addEventListener('click', () => slideInput.click());
+      slideInput.addEventListener('change', () => {
+        if (slideInput.files && slideInput.files[0]) {
+          uploadBtn.textContent = 'Slide Selected';
+        } else {
+          uploadBtn.textContent = 'Upload Slide';
+        }
+      });
+    });
+
     // Check if we're running on Live Server
     const isLiveServer = window.location.port === '5500' || 
                          window.location.port === '5501' || 
@@ -572,10 +594,10 @@
     });
 
     // Handle sending messages
-    document.getElementById('sendButton').addEventListener('click', sendMessage);
+    document.getElementById('sendButton').addEventListener('click', generateVideo);
     document.getElementById('userMessage').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
-        sendMessage();
+        generateVideo();
       }
     });
 
@@ -588,7 +610,7 @@
       "For this video lesson, I'd create a narrative structure that builds the concept from basic principles to advanced applications. We'd use multiple examples and colorful visualizations to ensure understanding."
     ];
 
-    function sendMessage() {
+    async function generateVideo() {
       const userMessage = document.getElementById('userMessage').value.trim();
       if (!userMessage) return;
 
@@ -605,63 +627,72 @@
       // Show typing indicator
       const typingDiv = document.createElement('div');
       typingDiv.classList.add('message', 'ai-message', 'typing-indicator');
-      typingDiv.innerHTML = 'EduKrack is thinking<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
+      typingDiv.innerHTML = 'EduKrack is generating your video<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
       chatContent.appendChild(typingDiv);
-
-      // Scroll to bottom
       chatContent.scrollTop = chatContent.scrollHeight;
 
+      // If Live Server, show mock response and skip API
       if (isLiveServer) {
-        // In Live Server mode, use mock responses instead of making API calls
         setTimeout(() => {
-          // Remove typing indicator
           chatContent.removeChild(typingDiv);
-          
-          // Get random response from mock responses
           const randomIndex = Math.floor(Math.random() * mockResponses.length);
           const mockReply = mockResponses[randomIndex];
-          
-          // Add AI response to chat
           const aiMessageDiv = document.createElement('div');
           aiMessageDiv.classList.add('message', 'ai-message');
           aiMessageDiv.textContent = mockReply;
           chatContent.appendChild(aiMessageDiv);
           chatContent.scrollTop = chatContent.scrollHeight;
-        }, 1500); // Simulate API delay
+        }, 1200);
         return;
       }
 
-      // Send to backend and get response
-      fetch('/api/generate-reply', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: userMessage }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          // Remove typing indicator
-          chatContent.removeChild(typingDiv);
-          
-          // Add AI response to chat
-          const aiMessageDiv = document.createElement('div');
-          aiMessageDiv.classList.add('message', 'ai-message');
-          aiMessageDiv.textContent = data.reply;
-          chatContent.appendChild(aiMessageDiv);
-          chatContent.scrollTop = chatContent.scrollHeight;
-        })
-        .catch(error => {
-          // Remove typing indicator
-          chatContent.removeChild(typingDiv);
-          
-          console.error('Error:', error);
-          const aiMessageDiv = document.createElement('div');
-          aiMessageDiv.classList.add('message', 'ai-message');
-          aiMessageDiv.textContent = 'Sorry, I encountered an error while processing your request.';
-          chatContent.appendChild(aiMessageDiv);
-          chatContent.scrollTop = chatContent.scrollHeight;
+      try {
+        const form = new FormData();
+        form.append('message', userMessage);
+        const slideInput = document.getElementById('slideInput');
+        if (slideInput && slideInput.files && slideInput.files[0]) {
+          form.append('slide', slideInput.files[0]);
+        }
+
+        const resp = await fetch('/api/generate-video', {
+          method: 'POST',
+          body: form
         });
+
+        const data = await resp.json();
+        // Remove typing indicator
+        chatContent.removeChild(typingDiv);
+
+        if (data && data.success && data.videoUrl) {
+          // Add AI message
+          const aiMessageDiv = document.createElement('div');
+          aiMessageDiv.classList.add('message', 'ai-message');
+          aiMessageDiv.textContent = data.message || 'Here is your video';
+          chatContent.appendChild(aiMessageDiv);
+
+          // Show video
+          const videoContainer = document.getElementById('videoContainer');
+          const lessonVideo = document.getElementById('lessonVideo');
+          lessonVideo.src = data.videoUrl;
+          videoContainer.style.display = 'block';
+          lessonVideo.load();
+          lessonVideo.play().catch(() => {});
+        } else {
+          const aiMessageDiv = document.createElement('div');
+          aiMessageDiv.classList.add('message', 'ai-message');
+          aiMessageDiv.textContent = data.message || 'Sorry, I could not process your request.';
+          chatContent.appendChild(aiMessageDiv);
+        }
+        chatContent.scrollTop = chatContent.scrollHeight;
+      } catch (err) {
+        console.error('Video generation error:', err);
+        chatContent.removeChild(typingDiv);
+        const aiMessageDiv = document.createElement('div');
+        aiMessageDiv.classList.add('message', 'ai-message');
+        aiMessageDiv.textContent = 'Sorry, an error occurred while generating the video.';
+        chatContent.appendChild(aiMessageDiv);
+        chatContent.scrollTop = chatContent.scrollHeight;
+      }
     }
     
     // Mobile menu toggle
