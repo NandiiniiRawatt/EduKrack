@@ -360,13 +360,22 @@ app.post('/api/generate-video', upload.single('slide'), async (req, res) => {
     }
 
     // 2) Build a safe Manim Python script from template using the parsed variables
+    const templatesDir = path.join(__dirname, 'public', 'manim_templates');
+    const templateFile = path.join(templatesDir, 'bullet_template.py');
+
+    if (!fs.existsSync(templateFile)) {
+      console.error('Template not found:', templateFile);
+      return res.status(500).json({ success: false, message: 'Server template missing' });
+    }
+
+    const templateContent = fs.readFileSync(templateFile, 'utf8');
+    const bulletsForTemplate = JSON.stringify(bullets);
+
+    // Simple replace tokens {{title}} and {{bullets_list}}
+    let generatedScript = templateContent.replace('{{title}}', safeTitle).replace('{{bullets_list}}', bulletsForTemplate);
+
     const scriptPath = path.join(__dirname, 'public', 'generated_script.py');
-    const safeTitle = parsed.title.replace(/`/g, "'");
-    const bullets = parsed.bullets.slice(0, 8).map(b => (b || '').replace(/`/g, "'")).map(b => b.replace(/\r?\n/g, ' '));
-
-    const pythonTemplate = `from manim import *\n\nclass EducationalScene(Scene):\n    def construct(self):\n        title = Text(${JSON.stringify(safeTitle)}, font_size=48).to_edge(UP)\n        self.play(Write(title))\n        self.wait(0.5)\n\n        bullets = ${JSON.stringify(bullets)}\n        for i, b in enumerate(bullets):\n            txt = Text(b, font_size=28)\n            txt.to_edge(LEFT)\n            txt.shift(DOWN * (i * 0.8 + 1))\n            self.play(FadeIn(txt))\n            self.wait(0.6)\n\n        self.wait(1)\n`;
-
-    fs.writeFileSync(scriptPath, pythonTemplate, 'utf8');
+    fs.writeFileSync(scriptPath, generatedScript, 'utf8');
     console.log('Wrote generated script to', scriptPath);
 
     // 3) Render using Manim CLI (this may take time). Output to public/media/videos/generated_output.mp4
